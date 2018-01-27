@@ -16,6 +16,8 @@ class Config(object):
     # The secret key is needed to keep the client-side sessions secure. (Unique to app)
     # SECRET KEY NEEDS TO BE HIDDEN USING ENV VARIABLE BEFORE PRODUCTION
     SECRET_KEY = b'\x95\x87\x1c\xb7F\xeb\x03\xdd\xb5\xfa+\xb8:5\xcci\xff\xc9\tg>\xb5%\xaf'
+    # db url is also env-based
+    SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URL']
 
 class ProductionConfig(Config):
     DEBUG = False
