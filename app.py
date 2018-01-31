@@ -1,12 +1,26 @@
-from flask import Flask
-from flask import Flask, flash, redirect, render_template, request, session, abort
+#from flask import Flask
+from flask import Flask, flash, redirect, render_template, \
+    request, session, abort
 from flask.ext.sqlalchemy import SQLAlchemy
+"""
+#have not yet installed these
+from flask.ext.security import current_user, login_required, \
+    RoleMixin, Security, SQLAlchemyUserDatastore, UserMixin, \
+    utils
+
+from flask_mail import Mail
+from flask.ext.admin import Admin
+from flask.ext.admin.contrib import sqla
+
+from wtforms.fields import PasswordField
+"""
 import os
 
 app = Flask(__name__)
 #ensure use of correct environment variables depending on where the app is run from
 app.config.from_object(os.environ['APP_SETTINGS'])
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+#mail = Mail(app)
 db = SQLAlchemy(app)
 
 from models import BaseModel, Insured
@@ -25,6 +39,9 @@ def do_admin_login():
     else:
         flash('wrong password!')
     return home()
+
+#@app.route('/register', methods=['POST'])
+#def 
 
 @app.route('/logout')
 def logout():
