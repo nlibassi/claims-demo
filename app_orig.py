@@ -2,6 +2,10 @@
 from flask import Flask, flash, redirect, render_template, \
     request, session, abort
 from flask.ext.sqlalchemy import SQLAlchemy
+
+from flask_login import LoginManager, current_user, login_user
+#may need to add back in
+#from flask_login import UserMixin
 """
 #have not yet installed these
 from flask.ext.security import current_user, login_required, \
@@ -17,6 +21,9 @@ from wtforms.fields import PasswordField
 import os
 
 app = Flask(__name__)
+
+login = LoginManager(app)
+
 #ensure use of correct environment variables depending on where the app is run from
 app.config.from_object(os.environ['APP_SETTINGS'])
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -32,6 +39,18 @@ def home():
     else:
         return "Hello Boss!"
 
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+    form = LoginForm()
+    if form.validate_on_submit():
+        #finish this line after updated db schema
+        user = Insured.query.filter_by()
+
+
+#login function from before use of flask-login
+"""
 @app.route('/login', methods=['POST'])
 def do_admin_login():
     if request.form['password'] == 'password' and request.form['username'] == 'admin':
@@ -39,6 +58,7 @@ def do_admin_login():
     else:
         flash('wrong password!')
     return home()
+"""
 
 #@app.route('/register', methods=['POST'])
 #def 

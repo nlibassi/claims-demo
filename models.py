@@ -1,6 +1,8 @@
 from app import db
+from app import login
 from sqlalchemy.dialects.postgresql import JSON
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask_login import UserMixin
 
 class BaseModel(db.Model):
     """Base data model for all objects"""
@@ -14,7 +16,7 @@ class BaseModel(db.Model):
         #used for querying database
         return self.__dict__
 
-class Insured(BaseModel, db.Model):
+class Insured(BaseModel, UserMixin, db.Model):
     __tablename__ = 'insureds'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -36,3 +38,7 @@ class Insured(BaseModel, db.Model):
       self.last_name = last_name
       self.email = email
       #self.password = password
+
+@login.user_loader
+def load_user(id):
+    return Insured.query.get(int(id))

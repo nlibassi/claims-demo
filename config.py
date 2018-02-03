@@ -18,6 +18,20 @@ class Config(object):
     SECRET_KEY = b'\x95\x87\x1c\xb7F\xeb\x03\xdd\xb5\xfa+\xb8:5\xcci\xff\xc9\tg>\xb5%\xaf'
     # db url is also env-based
     SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URL']
+    #add security salt later
+    #SECURITY_PASSWORD_HASH = 'pbkdf2_sha512'
+    #SECURITY_PASSWORD_SALT = 
+
+    """
+    finish later
+    SECURITY_EMAIL_SENDER = 'no-reply@example.com'
+    MAIL_SERVER = 'email-smtp.us-west-2.amazonaws.com'
+    MAIL_PORT = 465
+    MAIL_USE_SSL = True
+    MAIL_USERNAME = ''
+    MAIL_PASSWORD = ''
+
+    """
 
 class ProductionConfig(Config):
     DEBUG = False
