@@ -17,7 +17,9 @@ class Config(object):
     # SECRET KEY NEEDS TO BE HIDDEN USING ENV VARIABLE BEFORE PRODUCTION
     SECRET_KEY = os.environ.get('SECRET_KEY') or b'\x95\x87\x1c\xb7F\xeb\x03\xdd\xb5\xfa+\xb8:5\xcci\xff\xc9\tg>\xb5%\xaf'
     # db url is also env-based
-    SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URL']
+    #is app.db created in the background when the Flask app object is created? don't think so
+    SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URL'] or 'postgresql:///' + os.path.join(basedir, 'app.db')
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
     #add security salt later
     #SECURITY_PASSWORD_HASH = 'pbkdf2_sha512'
     #SECURITY_PASSWORD_SALT = 

@@ -1,0 +1,87 @@
+nlibassi@Lick2015:~$ cd claims-demo/
+nlibassi@Lick2015:~/claims-demo$ source .env
+(env) nlibassi@Lick2015:~/claims-demo$ python
+Python 3.6.4 (default, Jan 25 2018, 06:43:29) 
+[GCC 4.8.4] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> from app import db
+>>> from app.models import Insured, Claim
+>>> i = Insured(username='testguy', email='testguy@example.com')
+>>> db.session.add(i)
+>>> i
+<User testguy>
+>>> db.session.commit(i)
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+  File "/home/nlibassi/claims-demo/env/lib/python3.6/site-packages/sqlalchemy/orm/scoping.py", line 153, in do
+    return getattr(self.registry(), name)(*args, **kwargs)
+TypeError: commit() takes 1 positional argument but 2 were given
+>>> db.session.commit()
+>>> i = Insured(username='susan', email='susan@example.com')
+>>> db.session(i)
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: __call__() takes 1 positional argument but 2 were given
+>>> db.session.add(i)
+>>> db.session.commit()
+>>> insureds = Insured.query.all()
+>>> insureds
+[<User testguy>, <User susan>]
+>>> for i in insureds:
+...     print(i.id, i.username)
+... 
+1 testguy
+2 susan
+>>> User.query.get(1)
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+NameError: name 'User' is not defined
+>>> Insured.query.get(1)
+<User testguy>
+>>> u = Insured.query.get(1)
+>>> c = Claim(body='broke my arm', author=u)
+>>> db.session.add(c)
+>>> db.session.commit()
+>>> i
+<User susan>
+>>> i = Insured.query.get(1)
+>>> i
+<User testguy>
+>>> claims = i.claims.all()
+>>> claims
+[<Claim broke my arm>]
+>>> i1 = Insured.query.get(2)
+>>> i1
+<User susan>
+>>> i1.posts.all()
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+AttributeError: 'Insured' object has no attribute 'posts'
+>>> i1.claims.all()
+[]
+>>> claims = Claim.query.all()
+>>> for c in claims:
+...     print(c.id, c.author.username, c.body)
+... 
+1 testguy broke my arm
+>>> for c in claims:
+...     print(c.id, c.username, c.body)
+... 
+Traceback (most recent call last):
+  File "<stdin>", line 2, in <module>
+AttributeError: 'Claim' object has no attribute 'username'
+>>> Insured.query.order_by(User.username.desc()).all()
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+NameError: name 'User' is not defined
+>>> Insured.query.order_by(Insured.username.desc()).all()
+[<User testguy>, <User susan>]
+>>> insureds = Insured.query.all()
+>>> for i in insureds:
+...     db.session.delete(i)
+... 
+>>> claims = Claim.query.all()
+>>> for c in claims:
+...     db.session.delete(c)
+... 
+>>> db.session.commit()
