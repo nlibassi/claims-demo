@@ -29,3 +29,7 @@ class RegistrationForm(FlaskForm):
         insured =  Insured.query.filter_by(email=email.data).first()
         if insured is not None:
             raise ValidationError('Please use a different email address')
+
+class EditProfileForm(FlaskForm):
+    username = StringField('Username', validators=[DataRequired()])
+    submit = SubmitField('Submit')            

@@ -14,6 +14,7 @@ class Insured(UserMixin, db.Model):
     #not a db field but high-level view of relationship 
     #between insureds and claims - a 'virtual field'
     claims = db.relationship('Claim', backref='author', lazy='dynamic')
+    last_seen = db.Column(db.DateTime, default=datetime.utcnow)
 
     def __repr__(self):
         return '<User {}>'.format(self.username)
