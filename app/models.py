@@ -7,14 +7,18 @@ from flask_login import UserMixin
 
 #add UserMixin back after BaseModel
 class Insured(UserMixin, db.Model):
+    #make id serial next time? but still populates itself this way
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(64), index=True, unique=True)
+    username = db.Column(db.String (64), index=True, unique=True)
     email = db.Column(db.String(120), index=True, unique=True)
     password_hash = db.Column(db.String(128))
     #not a db field but high-level view of relationship 
     #between insureds and claims - a 'virtual field'
     claims = db.relationship('Claim', backref='author', lazy='dynamic')
     last_seen = db.Column(db.DateTime, default=datetime.utcnow)
+    first_name = db.Column(db.String(64))
+    middle_name = db.Column(db.String(64))
+    last_name = db.Column(db.String(64))
 
     def __repr__(self):
         return '<User {}>'.format(self.username)

@@ -7,6 +7,12 @@
         <p>
             {{ form.username.label }}<br>
             {{ form.username(size=32) }}<br>
+            {{ form.first_name.label }}<br>
+            {{ form.first_name(size=32) }}<br>
+            {{ form.middle_name.label }}<br>
+            {{ form.middle_name(size=32) }}<br>
+            {{ form.last_name.label }}<br>
+            {{ form.last_name(size=32) }}<br>
             {% for error in form.username.errors %}
             <span style="color: red;">[{{ error }}]</span>
             {% endfor %}

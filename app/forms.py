@@ -32,4 +32,7 @@ class RegistrationForm(FlaskForm):
 
 class EditProfileForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
+    first_name = StringField('First name')
+    middle_name = StringField('Middle name')
+    last_name = StringField('Last name')
     submit = SubmitField('Submit')            

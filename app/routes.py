@@ -82,11 +82,17 @@ def edit_profile():
     form = EditProfileForm()
     if form.validate_on_submit():
         current_user.username = form.username.data
+        current_user.first_name = form.first_name.data
+        current_user.middle_name = form.middle_name.data
+        current_user.last_name = form.last_name.data
         db.session.commit()
         flash('Your changes have been saved.')
         return redirect(url_for('edit_profile'))
     #if form is being requested for the first time:
     elif request.method == 'GET':
         form.username.data = current_user.username
+        form.first_name.data = current_user.first_name
+        form.middle_name.data = current_user.middle_name
+        form.last_name.data = current_user.last_name
     #in case of validation error (in case of error in form data): (?)
     return render_template('edit_profile.html', title='Edit Profile', form=form)
