@@ -1,19 +1,9 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>Edit Profile</h1>
+    <h1>Edit Dependent Profile</h1>
     <form action="" method="post">
         {{ form.hidden_tag() }}
-        {% if insured == current_user %}
-        <p><a href="{{ url_for('edit_dependent_profile') }}">Add dependent or edit a dependent's profile</a></p>
-        {% endif %}
-        <p>
-            {{ form.username.label }}<br>
-            {{ form.username(size=32) }}<br>
-            {% for error in form.username.errors %}
-            <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-        </p>
         <p>
             {{ form.first_name.label }}<br>
             {{ form.first_name(size=32) }}<br>

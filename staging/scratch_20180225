@@ -1,0 +1,58 @@
+{{ form.first_name.label }}<br>
+            {{ form.first_name(size=32) }}<br>
+            {{ form.middle_name.label }}<br>
+            {{ form.middle_name(size=32) }}<br>
+            {{ form.last_name.label }}<br>
+            {{ form.last_name(size=32) }}<br>
+            {{ form.gender.label }}<br>
+            {{ form.gender(size=15) }}<br>
+
+
+        #current_user.relationship_to_insured = form.relationship_to_insured
+        #current_user.date_of_birth = form.date_of_birth
+
+   #if form is not being requested for the first time:
+
+
+
+        #current_user.relationship_to_insured = form.relationship_to_insured
+        #current_user.date_of_birth = form.date_of_birth
+    #in case of validation error (in case of error in form data): (?)
+
+#add route for edit_dependent_profile
+
+
+
+#removed from models.py 2/25/18
+
+#remove Profile class entirely now?
+
+"""
+#add indexes and lookup tables
+class Dependent(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    insured_id = db.Column(db.Integer, db.ForeignKey('insured.id'))
+    first_name = db.Column(db.String(64))
+    middle_name = db.Column(db.String(64))
+    last_name = db.Column(db.String(64))
+    #rel to emp and similar others can be string for now
+    # but should be int with lookup tables in production
+    relationship_to_insured = db.Column(db.Integer)
+    date_of_birth = db.Column(db.Date)
+    gender = db.Column(db.Integer)
+    #virtual field to be edited later
+    claims = db.relationship('Claim', backref='author', lazy='dynamic')
+
+    def __repr__(self):
+        return '<Relationship to Insured: {}, First name: {}, Last name: {}>' .format(self.relationship_to_insured, self.first_name, self.last_name)
+"""
+
+
+
+        <p>
+            {{ form.gender.label }}<br>
+            {{ form.gender(size=15) }}<br>
+            {% for error in form.gender.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>

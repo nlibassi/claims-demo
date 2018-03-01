@@ -1,8 +1,10 @@
 from flask import render_template, flash, redirect, url_for, request
 from app import app, db
-from app.forms import LoginForm, RegistrationForm, EditProfileForm
+from app.forms import LoginForm, RegistrationForm, EditProfileForm, \
+EditDependentProfileForm, AddDependentForm
 from flask_login import current_user, login_user, logout_user, login_required
-from app.models import Insured
+#add Claim later
+from app.models import Insured, Dependent
 from werkzeug.urls import url_parse
 from datetime import datetime
 
@@ -10,7 +12,8 @@ from datetime import datetime
 @app.route('/index')
 @login_required
 def index():
-    user = {'username': 'Nick'}
+    # below used as test before having traditional users and posts
+    #user = {'username': 'Nick'}
     posts = [
         {
             'author' : {'username': 'John'},
@@ -70,6 +73,8 @@ def insured(username):
     ]
     return render_template('insured.html', insured=insured, posts=posts)
 
+#def dependent(username_dependent_id)
+
 @app.before_request
 def before_request():
     if current_user.is_authenticated:
@@ -85,14 +90,55 @@ def edit_profile():
         current_user.first_name = form.first_name.data
         current_user.middle_name = form.middle_name.data
         current_user.last_name = form.last_name.data
+        current_user.test = form.test.data
+        current_user.gender = form.gender.data
         db.session.commit()
         flash('Your changes have been saved.')
         return redirect(url_for('edit_profile'))
-    #if form is being requested for the first time:
     elif request.method == 'GET':
         form.username.data = current_user.username
         form.first_name.data = current_user.first_name
         form.middle_name.data = current_user.middle_name
         form.last_name.data = current_user.last_name
-    #in case of validation error (in case of error in form data): (?)
+        form.test.data = current_user.test
+        form.gender.data = current_user.gender
     return render_template('edit_profile.html', title='Edit Profile', form=form)
+
+@app.route('/add_dependent', methods=['GET', 'POST'])
+def add_dependent():
+    form = AddDependentForm()
+    if form.validate_on_submit():
+        dependent = Dependent(first_name=form.first_name.data, 
+            middle_name=form.middle_name.data, last_name=form.last_name.data,
+            insured_id = current_user.id)
+        if current_user.has_dependent == 0:
+            current_user.has_dependent = 1
+        db.session.add(dependent)
+        db.session.commit()
+        flash('{} {} {} has been added as a dependent'.format(dependent.first_name, 
+            dependent.middle_name, dependent.last_name))
+        return redirect(url_for('add_dependent'))
+        #return redirect(url_for('edit_dependent_profile'))
+    return render_template('add_dependent.html', title='Add Dependent', form=form)
+
+
+#may need to define variables using current_user.dependent<id>.first_name etc
+@app.route('/edit_dependent_profile', methods=['GET', 'POST']) 
+def edit_dependent_profile():
+    form = EditDependentProfileForm()
+    if form.validate_on_submit():
+        dependent.first_name = form.first_name.data
+        middle_name = form.middle_name.data
+        last_name = form.last_name.data
+        test = form.test.data
+        gender = form.gender.data
+        db.session.commit()
+        flash('Your changes have been saved.')
+        return redirect(url_for('edit_dependent_profile'))
+    elif request.method == 'GET':
+        form.first_name.data = first_name
+        form.middle_name.data = middle_name
+        form.last_name.data = last_name
+        form.test.data = test
+        form.gender.data = gender
+    return render_template('edit_dependent_profile.html', title='Edit Dependent Profile', form=form)

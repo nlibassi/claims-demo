@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, \
-SubmitField
+SubmitField, DateField
 from wtforms.validators import ValidationError, DataRequired, Email, \
 EqualTo
 from app.models import Insured
@@ -32,7 +32,29 @@ class RegistrationForm(FlaskForm):
 
 class EditProfileForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
-    first_name = StringField('First name')
-    middle_name = StringField('Middle name')
-    last_name = StringField('Last name')
-    submit = SubmitField('Submit')            
+    first_name = StringField('First Name')
+    middle_name = StringField('Middle Name')
+    last_name = StringField('Last Name')
+    test = StringField('Test')
+    gender = StringField('Gender')
+    #relationship_to_insured = StringField('Relationship to Employee')
+    #date_of_birth = DateField('Date of Birth')
+    submit = SubmitField('Submit')   
+
+class AddDependentForm(FlaskForm):
+    first_name = StringField('First Name')
+    middle_name = StringField('Middle Name')
+    last_name = StringField('Last Name')
+    #relationship_to_insured = StringField('Relationship to Employee')
+    #date_of_birth = DateField('Date of Birth')
+    submit = SubmitField('Submit')  
+
+class EditDependentProfileForm(FlaskForm):
+    first_name = StringField('First Name')
+    middle_name = StringField('Middle Name')
+    last_name = StringField('Last Name')
+    test = StringField('Test')
+    gender = StringField('Gender')
+    #relationship_to_insured = StringField('Relationship to Employee')
+    #date_of_birth = DateField('Date of Birth')
+    submit = SubmitField('Submit')          
