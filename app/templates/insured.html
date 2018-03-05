@@ -14,5 +14,11 @@
     {% if insured == current_user %}
     <p><a href="{{ url_for('edit_profile') }}">Edit your profile</a></p>
     <p><a href="{{ url_for('add_dependent') }}">Add a dependent</a></p>
+    {% if current_user.has_dependent == 1 %}
+            <p>Edit dependent profile for: </p>
+            {% for dependent in dependents %}
+             <p><a href="{{ url_for('edit_dependent_profile', dependent_name = dependent.full_name)}}">{{ dependent.full_name }}</a></p>
+            {% endfor %}
+        {% endif %}
     {% endif %}
 {% endblock %}

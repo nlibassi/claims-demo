@@ -24,7 +24,9 @@ def index():
             'body' : 'Testing another body'
         }
     ]
+   
     return render_template('index.html', title='Home', posts=posts)
+     
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -71,7 +73,24 @@ def insured(username):
         {'author': insured, 'body': 'Test post #1'},
         {'author': insured, 'body': 'Test post #2'}
     ]
-    return render_template('insured.html', insured=insured, posts=posts)
+    """
+    #temporary test dependents
+    dependents = [
+        {
+            'full_name' : 'John Bill Smith'
+        }, 
+        {
+            'full_name' : 'Bo John Smith'
+        }
+    ]
+
+    """
+    dependents_list = list(Dependent.query.filter(Dependent.insured_id==current_user.id))
+    dependents  = []
+    for d in dependents_list:
+        dependents.append({'full_name': d})
+    
+    return render_template('insured.html', insured=insured, posts=posts, dependents=dependents)
 
 #def dependent(username_dependent_id)
 
@@ -122,23 +141,40 @@ def add_dependent():
     return render_template('add_dependent.html', title='Add Dependent', form=form)
 
 
+# needs to be rewritten
 #may need to define variables using current_user.dependent<id>.first_name etc
-@app.route('/edit_dependent_profile', methods=['GET', 'POST']) 
-def edit_dependent_profile():
+@app.route('/edit_dependent_profile/<dependent_name>', methods=['GET', 'POST']) 
+def edit_dependent_profile(dependent_name):
     form = EditDependentProfileForm()
+    dependent_name_first = dependent_name.split(' ')[0]
+    dependent_name_middle = dependent_name.split(' ')[1]
+    dependent_name_last = dependent_name.split(' ')[2]
+    # result of this query is just the repr containing first, middle, and last name; not accessing 
+    # the db record in this way
+    dependent = Dependent.query. \
+        filter(Dependent.first_name==dependent_name_first and \
+            Dependent.middle_name==dependent_name_middle and \
+            Dependent.last_name==dependent_name_last).first()
+
+    #dependents_list = list(Dependent.query.filter(Dependent.insured_id==current_user.id))
+
+    #query db using dependent argument and update db that way
     if form.validate_on_submit():
         dependent.first_name = form.first_name.data
-        middle_name = form.middle_name.data
-        last_name = form.last_name.data
-        test = form.test.data
-        gender = form.gender.data
+        dependent.middle_name = form.middle_name.data
+        dependent.last_name = form.last_name.data
+        dependent.test = form.test.data
+        dependent.gender = form.gender.data
         db.session.commit()
         flash('Your changes have been saved.')
-        return redirect(url_for('edit_dependent_profile'))
+        return redirect(url_for('edit_dependent_profile', dependent_name=dependent_name))
     elif request.method == 'GET':
-        form.first_name.data = first_name
-        form.middle_name.data = middle_name
-        form.last_name.data = last_name
-        form.test.data = test
-        form.gender.data = gender
-    return render_template('edit_dependent_profile.html', title='Edit Dependent Profile', form=form)
+        form.first_name.data = dependent_name_first
+        form.middle_name.data = dependent_name_middle
+        form.last_name.data = dependent_name_last
+        form.test.data = dependent.test
+        form.gender.data = dependent.gender
+    
+    return render_template('edit_dependent_profile.html', title='Edit Dependent Profile', \
+        form=form, dependent=dependent, dependent_name=dependent_name)
+  

@@ -55,7 +55,7 @@ class Dependent(db.Model):
     claims = db.relationship('Claim', backref='patient', lazy='dynamic')
 
     def __repr__(self):
-        return '<Dependent: First Name{}, Last Name {}>'.format(self.first_name, self.last_name)
+        return '{} {} {}'.format(self.first_name, self.middle_name, self.last_name)
 
 
 class Claim(db.Model):
