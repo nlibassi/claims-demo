@@ -60,7 +60,7 @@ class Dependent(db.Model):
 
 class Claim(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    insured_id = db.Column(db.Integer, db.ForeignKey('insured.id'))
+    insured_id = db.Column(db.Integer, db.ForeignKey('insured.id'), nullable=False)
     dependent_id = db.Column(db.Integer, db.ForeignKey('dependent.id'))
     body = db.Column(db.String(140))
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)

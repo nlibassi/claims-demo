@@ -57,4 +57,10 @@ class EditDependentProfileForm(FlaskForm):
     gender = StringField('Gender')
     #relationship_to_insured = StringField('Relationship to Employee')
     #date_of_birth = DateField('Date of Birth')
-    submit = SubmitField('Submit')          
+    submit = SubmitField('Submit')         
+
+class FileClaimForm(FlaskForm):
+    body = StringField('Claim Details')
+    #relationship_to_insured = StringField('Relationship to Employee')
+    #date_of_birth = DateField('Date of Birth')
+    submit = SubmitField('Submit') 

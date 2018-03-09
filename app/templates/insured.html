@@ -20,5 +20,9 @@
              <p><a href="{{ url_for('edit_dependent_profile', dependent_name = dependent.full_name)}}">{{ dependent.full_name }}</a></p>
             {% endfor %}
         {% endif %}
+        <p>File claim for: </p>
+        {% for patient in patients %}
+        <p><a href="{{ url_for('file_claim', patient_name = patient.full_name)}}">{{patient.full_name}}</a></p>
+        {% endfor %}
     {% endif %}
 {% endblock %}

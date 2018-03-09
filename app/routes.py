@@ -1,10 +1,10 @@
 from flask import render_template, flash, redirect, url_for, request
 from app import app, db
 from app.forms import LoginForm, RegistrationForm, EditProfileForm, \
-EditDependentProfileForm, AddDependentForm
+EditDependentProfileForm, AddDependentForm, FileClaimForm
 from flask_login import current_user, login_user, logout_user, login_required
 #add Claim later
-from app.models import Insured, Dependent
+from app.models import Insured, Dependent, Claim
 from werkzeug.urls import url_parse
 from datetime import datetime
 
@@ -85,12 +85,19 @@ def insured(username):
     ]
 
     """
-    dependents_list = list(Dependent.query.filter(Dependent.insured_id==current_user.id))
+    dependents_list = list(Dependent.query.filter_by(insured_id=current_user.id))
     dependents  = []
     for d in dependents_list:
         dependents.append({'full_name': d})
-    
-    return render_template('insured.html', insured=insured, posts=posts, dependents=dependents)
+    print('Dependents: {}'.format(dependents_list))
+
+    patients = dependents
+    patients.append({'full_name': '{} {} {}'.format(insured.first_name, insured.middle_name, \
+     insured.last_name)})
+    print('Patients: {}'.format(patients))
+
+    return render_template('insured.html', insured=insured, posts=posts, \
+        dependents=dependents, patients=patients)
 
 #def dependent(username_dependent_id)
 
@@ -129,7 +136,7 @@ def add_dependent():
     if form.validate_on_submit():
         dependent = Dependent(first_name=form.first_name.data, 
             middle_name=form.middle_name.data, last_name=form.last_name.data,
-            insured_id = current_user.id)
+            insured_id=current_user.id)
         if current_user.has_dependent == 0:
             current_user.has_dependent = 1
         db.session.add(dependent)
@@ -149,8 +156,7 @@ def edit_dependent_profile(dependent_name):
     dependent_name_first = dependent_name.split(' ')[0]
     dependent_name_middle = dependent_name.split(' ')[1]
     dependent_name_last = dependent_name.split(' ')[2]
-    # result of this query is just the repr containing first, middle, and last name; not accessing 
-    # the db record in this way
+    # result of this query is just the repr containing first, middle, and last name unless we use .first()
     dependent = Dependent.query. \
         filter(Dependent.first_name==dependent_name_first and \
             Dependent.middle_name==dependent_name_middle and \
@@ -177,4 +183,55 @@ def edit_dependent_profile(dependent_name):
     
     return render_template('edit_dependent_profile.html', title='Edit Dependent Profile', \
         form=form, dependent=dependent, dependent_name=dependent_name)
+
+@app.route('/file_claim/<patient_name>', methods=['GET', 'POST']) 
+def file_claim(patient_name):
+    form = FileClaimForm()
+    patient_name_first = patient_name.split(' ')[0]
+    patient_name_middle = patient_name.split(' ')[1]
+    patient_name_last = patient_name.split(' ')[2]
+    try:
+        patient = Dependent.query. \
+                filter_by(first_name=patient_name_first, \
+                    middle_name=patient_name_middle, \
+                    last_name=patient_name_last).first()
+        print('Patient id is {}'.format(patient.id))
+        print(patient.insured_id)
+        claim = Claim(insured_id=current_user.id, dependent_id=patient.id)
+    except:
+        patient = Insured.query. \
+            filter_by(first_name=patient_name_first, \
+                middle_name=patient_name_middle, \
+                last_name=patient_name_last).first()
+        claim = Claim(insured_id=current_user.id)
+    """
+    try:
+        patient = Insured.query. \
+            filter_by(first_name=patient_name_first, \
+                middle_name=patient_name_middle, \
+                last_name=patient_name_last).first()
+        claim = Claim(insured_id=current_user.id)
+    except:
+        patient = Dependent.query. \
+            filter_by(first_name=patient_name_first, \
+                middle_name=patient_name_middle, \
+                last_name=patient_name_last).first()
+        print('Patient id is {}'.format(patient.id))
+        print(patient.insured_id)
+        claim = Claim(insured_id=current_user.id, dependent_id=16)
+    """
+    db.session.add(claim)
+    #dependents_list = list(Dependent.query.filter(Dependent.insured_id==current_user.id))
+
+    #query db using dependent argument and update db that way
+    if form.validate_on_submit():
+        claim.body = form.body.data
+        db.session.commit()
+        flash('Your claim has been submitted.')
+        return redirect(url_for('file_claim',  patient_name=patient_name))
+    elif request.method == 'GET':
+        form.body.data = claim.body
+    
+    return render_template('file_claim.html', title='File Claim', \
+        form=form, patient=patient, patient_name=patient_name)
   
