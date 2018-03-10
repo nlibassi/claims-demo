@@ -118,6 +118,25 @@ def edit_profile():
         current_user.last_name = form.last_name.data
         current_user.test = form.test.data
         current_user.gender = form.gender.data
+        current_user.date_of_birth = form.date_of_birth.data
+        current_user.air_id = form.air_id.data
+        current_user.mailing_street = form.mailing_street.data
+        current_user.mailing_optional = form.mailing_optional.data
+        current_user.mailing_city = form.mailing_city.data
+        current_user.mailing_state = form.mailing_state.data
+        current_user.mailing_zip = form.mailing_zip.data
+        current_user.mailing_country = form.mailing_country.data
+        current_user.residence_country = form.residence_country.data
+        current_user.foreign_currency_default = form.foreign_currency_default.data
+        current_user.other_coverage = form.other_coverage.data
+        current_user.other_insurance_co = form.other_insurance_co.data
+        current_user.other_plan_name = form.other_plan_name.data
+        current_user.other_plan_id = form.other_plan_id.data
+        current_user.medicare_part_a = form.medicare_part_a.data
+        current_user.medicare_part_b = form.medicare_part_b.data
+        current_user.medicare_id = form.medicare_id.data
+        current_user.full_time_student = form.full_time_student.data
+        current_user.string_test = form.string_test.data
         db.session.commit()
         flash('Your changes have been saved.')
         return redirect(url_for('edit_profile'))
@@ -128,6 +147,25 @@ def edit_profile():
         form.last_name.data = current_user.last_name
         form.test.data = current_user.test
         form.gender.data = current_user.gender
+        form.date_of_birth.data = current_user.date_of_birth
+        form.air_id.data = current_user.air_id
+        form.mailing_street.data = current_user.mailing_street
+        form.mailing_optional.data = current_user.mailing_optional
+        form.mailing_city.data = current_user.mailing_city
+        form.mailing_state.data = current_user.mailing_state
+        form.mailing_zip.data = current_user.mailing_zip
+        form.mailing_country.data = current_user.mailing_country
+        form.residence_country.data = current_user.residence_country
+        form.foreign_currency_default.data = current_user.foreign_currency_default
+        form.other_coverage.data = current_user.other_coverage
+        form.other_insurance_co.data = current_user.other_insurance_co
+        form.other_plan_name.data = current_user.other_plan_name
+        form.other_plan_id.data = current_user.other_plan_id
+        form.medicare_part_a.data = current_user.medicare_part_a
+        form.medicare_part_b.data = current_user.medicare_part_b
+        form.medicare_id.data = current_user.medicare_id
+        form.full_time_student.data = current_user.full_time_student
+        form.string_test.data = current_user.string_test
     return render_template('edit_profile.html', title='Edit Profile', form=form)
 
 @app.route('/add_dependent', methods=['GET', 'POST'])
