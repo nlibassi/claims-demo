@@ -38,7 +38,7 @@ class Insured(UserMixin, db.Model):
     medicare_part_b = db.Column(db.String(1))
     medicare_id = db.Column(db.String(64))
     full_time_student = db.Column(db.String(1))
-    has_dependent = db.Column(db.Boolean)
+    has_dependent = db.Column(db.Boolean())
     string_test = db.Column(db.String(1))
     #gender should be integer with lookup later, had issue with Integer
     #not a db field but high-level view of relationship 
@@ -81,7 +81,21 @@ class Claim(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     insured_id = db.Column(db.Integer, db.ForeignKey('insured.id'), nullable=False)
     dependent_id = db.Column(db.Integer, db.ForeignKey('dependent.id'))
-    body = db.Column(db.String(140))
+    diagnosis = db.Column(db.String(64))
+    accident_employment = db.Column(db.String(1))
+    accident_auto = db.Column(db.String(1))
+    accident_other = db.Column(db.String(1))
+    accident_date = db.Column(db.Date)
+    accident_details = db.Column(db.String(64))
+    service_type = db.Column(db.String(1))
+    service_details = db.Column(db.String(64))
+    service_date = db.Column(db.Date)
+    service_currency = db.Column(db.String(30))
+    service_provider = db.Column(db.String(30))
+    service_amount = db.Column(db.Float())
+    # the image may need to be uploaded to the server rather than stored in the db
+    #service_receipt = ??
+
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     #change to insured_id here and elsewhere
     #user_id = db.Column(db.Integer, db.ForeignKey('insured.id'))

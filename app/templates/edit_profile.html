@@ -86,7 +86,7 @@
         </p>
         <p>
             {{ form.mailing_state.label }}<br>
-            {{ form.mailing_state(size=20) }}<br>
+            {{ form.mailing_state }}<br>
             {% for error in form.mailing_state.errors %}
             <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
@@ -100,21 +100,21 @@
         </p>
         <p>
             {{ form.mailing_country.label }}<br>
-            {{ form.mailing_country(size=20) }}<br>
+            {{ form.mailing_country }}<br>
             {% for error in form.mailing_country.errors %}
             <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
         </p>
         <p>
             {{ form.residence_country.label }}<br>
-            {{ form.residence_country(size=20) }}<br>
+            {{ form.residence_country }}<br>
             {% for error in form.residence_country.errors %}
             <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
         </p>
         <p>
             {{ form.foreign_currency_default.label }}<br>
-            {{ form.foreign_currency_default(size=20) }}<br>
+            {{ form.foreign_currency_default }}<br>
             {% for error in form.foreign_currency_default.errors %}
             <span style="color: red;">[{{ error }}]</span>
             {% endfor %}

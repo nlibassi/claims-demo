@@ -91,7 +91,8 @@ def insured(username):
         dependents.append({'full_name': d})
     print('Dependents: {}'.format(dependents_list))
 
-    patients = dependents
+    #patients = dependents
+    patients = [d for d in dependents]
     patients.append({'full_name': '{} {} {}'.format(insured.first_name, insured.middle_name, \
      insured.last_name)})
     print('Patients: {}'.format(patients))
@@ -168,19 +169,24 @@ def edit_profile():
         form.string_test.data = current_user.string_test
     return render_template('edit_profile.html', title='Edit Profile', form=form)
 
+#@login_required
 @app.route('/add_dependent', methods=['GET', 'POST'])
 def add_dependent():
+    #insured = Insured.query.filter_by(username=username).first_or_404()
     form = AddDependentForm()
     if form.validate_on_submit():
         dependent = Dependent(first_name=form.first_name.data, 
             middle_name=form.middle_name.data, last_name=form.last_name.data,
             insured_id=current_user.id)
-        if current_user.has_dependent == 0:
-            current_user.has_dependent = 1
         db.session.add(dependent)
         db.session.commit()
-        flash('{} {} {} has been added as a dependent'.format(dependent.first_name, 
-            dependent.middle_name, dependent.last_name))
+        #current_user.has_dependent = True
+        insured = Insured.query.filter_by(id=current_user.id).first_or_404()
+        insured.has_dependent = True
+        flash('{} {}'.format(insured.has_dependent, insured.first_name))
+        #flash('{} {} {}'.format(insured.has_dependent, insured.first_name, insured.last_name))
+        #flash('{} {} {} has been added as a dependent'.format(dependent.first_name, 
+            #dependent.middle_name, dependent.last_name))
         return redirect(url_for('add_dependent'))
         #return redirect(url_for('edit_dependent_profile'))
     return render_template('add_dependent.html', title='Add Dependent', form=form)
@@ -263,12 +269,36 @@ def file_claim(patient_name):
 
     #query db using dependent argument and update db that way
     if form.validate_on_submit():
-        claim.body = form.body.data
+        claim.diagnosis = form.diagnosis.data
+        claim.accident_employment = form.accident_employment.data
+        claim.accident_auto = form.accident_auto.data
+        claim.accident_other = form.accident_other.data
+        claim.accident_date = form.accident_date.data
+        claim.accident_details = form.accident_details.data
+        claim.service_type = form.service_type.data
+        claim.service_details = form.service_details.data
+        claim.service_date = form.service_date.data
+        claim.service_currency = form.service_currency.data
+        claim.service_provider = form.service_provider.data
+        claim.service_amount = form.service_amount.data
+        #claim.service_receipt = form.service_receipt.data
         db.session.commit()
         flash('Your claim has been submitted.')
         return redirect(url_for('file_claim',  patient_name=patient_name))
     elif request.method == 'GET':
-        form.body.data = claim.body
+        form.diagnosis.data = claim.diagnosis
+        form.accident_employment.data = claim.accident_employment
+        form.accident_auto.data = claim.accident_auto
+        form.accident_other.data = claim.accident_other
+        form.accident_date.data = claim.accident_date
+        form.accident_details.data = claim.accident_details
+        form.service_type.data = claim.service_type
+        form.service_details.data = claim.service_details
+        form.service_date.data = claim.service_date
+        form.service_currency.data = current_user.foreign_currency_default
+        form.service_provider.data = claim.service_provider
+        form.service_amount.data = claim.service_amount
+        #form.service_receipt.data = claim.service_receipt
     
     return render_template('file_claim.html', title='File Claim', \
         form=form, patient=patient, patient_name=patient_name)

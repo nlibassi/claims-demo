@@ -1,11 +1,33 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, \
-SubmitField, DateField, SelectField
+SubmitField, DateField, SelectField, FileField
+#not using Required right now, look into it
 from wtforms.validators import ValidationError, DataRequired, Email, \
-EqualTo
+EqualTo, InputRequired, Required, Optional
 #3/10/18: not currently using QuerySelectField
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
 from app.models import Insured
+from app.geography_lists import us_states, countries, currencies
+#not sure if it's a good idea to import current_user here:
+#from flask_login import current_user
+
+"""
+class RequiredIf(Required):
+    # a validator which makes a field required if
+    # another field is set and has a truthy value
+    #https://stackoverflow.com/questions/8463209/how-to-make-a-field-conditionally-optional-in-wtforms
+
+    def __init__(self, other_field_name, *args, **kwargs):
+        self.other_field_name = other_field_name
+        super(RequiredIf, self).__init__(*args, **kwargs)
+
+    def __call__(self, form, field):
+        other_field = form._fields.get(self.other_field_name)
+        if other_field is None:
+            raise Exception('no field named "%s" in form' % self.other_field_name)
+        if bool(other_field.data):
+            super(RequiredIf, self).__call__(form, field)
+"""
 
 class LoginForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
@@ -45,12 +67,12 @@ class EditProfileForm(FlaskForm):
     mailing_street = StringField('Street Address')
     mailing_optional = StringField('Building (optional)')
     mailing_city = StringField('City')
-    mailing_state = StringField('State')
+    mailing_state = SelectField(label='State', choices=us_states)
     mailing_zip = StringField('Zip Code')
     #the following three will be replaced
-    mailing_country = StringField('Country (Mailing)')
-    residence_country = StringField('Country (Residence)')
-    foreign_currency_default = StringField('Default Currency')
+    mailing_country = SelectField(label='Country (Mailing)', choices=countries)
+    residence_country = SelectField(label='Country (Residence)', choices=countries)
+    foreign_currency_default = SelectField(label='Default Currency', choices=currencies)
     """
     mailing_country = SelectField(label='Country (Mailing)', choices=countries)
     residence_country = SelectField(label='Country (Residence)', choices=countries)
@@ -62,10 +84,25 @@ class EditProfileForm(FlaskForm):
     other_plan_id = StringField('Other Plan ID')
     medicare_part_a = SelectField(label='Coverage with Medicare Part A?', choices=[('n', 'No'), ('y', 'Yes')])
     medicare_part_b = SelectField(label='Coverage with Medicare Part B?', choices=[('n', 'No'), ('y', 'Yes')])
+    #something like this could be done in routes (maybe) but not here
+    #if medicare_part_a == 'Yes' or medicare_part_b == 'Yes':
+        #medicare_id = StringField('Medicare ID', validators=[InputRequired()])
+    #else:
     medicare_id = StringField('Medicare ID')
+    #medicare_id = StringField('Medicare ID', validators=[RequiredIf('medicare_part_a')])
     full_time_student = SelectField(label='Full-time Student?', choices=[('n', 'No'), ('y', 'Yes')])
     string_test = SelectField(label='String Test', choices=[('n', 'No'), ('y', 'Yes')])
-    ##############
+    # function below not working at all right now
+    def validate(self):
+        valid = True
+        if not FlaskForm.validate(self):
+            valid = False
+        # can't even get an error with code below and  setting medicare_id equal to 1 in form
+        if self.medicare_part_a == 'Yes' or self.medicare_part_b == 'Yes' and self.medicare_id == '1':
+            self.email.medicare_id.append("Medicare ID is required")
+            valid = False
+        else:
+            return valid
     submit = SubmitField('Submit')   
 
 class AddDependentForm(FlaskForm):
@@ -87,7 +124,22 @@ class EditDependentProfileForm(FlaskForm):
     submit = SubmitField('Submit')         
 
 class FileClaimForm(FlaskForm):
-    body = StringField('Claim Details')
-    #relationship_to_insured = StringField('Relationship to Employee')
-    #date_of_birth = DateField('Date of Birth')
+    diagnosis = StringField('Diagnosis or Type of Illness')
+    accident_employment = SelectField(label='Was the service for an employment-related accident?', \
+        choices=[('n', 'No'), ('y', 'Yes')], validators=[Optional()])
+    accident_auto = SelectField(label='Was the service for an automobile accident?', \
+        choices=[('n', 'No'), ('y', 'Yes')], validators=[Optional()])
+    accident_other = SelectField(label='Was the service for any other accident or injury?', \
+        choices=[('n', 'No'), ('y', 'Yes')], validators=[Optional()])
+    accident_date = DateField(label='Accident Date', format='%m/%d/%Y', validators=[Optional()])
+    accident_details = StringField('Details of Accident', validators=[Optional()])
+    service_type = SelectField(label='Service Type', \
+        choices=[('m', 'Medical'), ('d', 'Dental'), ('v', 'Vision'), ('h', 'Hearing'), ('r', 'Prescription')])
+    service_details = StringField('Details of Service')
+    service_date = DateField('Date of Service', format='%m/%d/%Y')
+    #pre-populate
+    service_currency = SelectField(label='Currency of Service', choices=currencies)
+    service_provider = StringField('Service Provider')
+    service_amount = StringField('Service Amount (local currency)')
+    #service_receipt = FileField('Service Receipt')
     submit = SubmitField('Submit') 
