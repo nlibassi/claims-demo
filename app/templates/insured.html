@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block content %}
+{% block app_content %}
     <h1>Insured: {{ insured.first_name }} {{ insured.last_name }}</h1>
     <h3>Username: {{ insured.username }}</h3>
     {% if insured.last_seen %}<p>Last activity on: {{ insured.last_seen }}</p>

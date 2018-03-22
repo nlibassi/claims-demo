@@ -7,6 +7,7 @@ from flask_login import current_user, login_user, logout_user, login_required
 from app.models import Insured, Dependent, Claim
 from werkzeug.urls import url_parse
 from datetime import datetime
+from werkzeug import secure_filename
 
 @app.route('/')
 @app.route('/index')
@@ -183,10 +184,10 @@ def add_dependent():
         #current_user.has_dependent = True
         insured = Insured.query.filter_by(id=current_user.id).first_or_404()
         insured.has_dependent = True
-        flash('{} {}'.format(insured.has_dependent, insured.first_name))
+        #flash('{} {}'.format(insured.has_dependent, insured.first_name))
         #flash('{} {} {}'.format(insured.has_dependent, insured.first_name, insured.last_name))
-        #flash('{} {} {} has been added as a dependent'.format(dependent.first_name, 
-            #dependent.middle_name, dependent.last_name))
+        flash('{} {} {} has been added as a dependent'.format(dependent.first_name, 
+            dependent.middle_name, dependent.last_name))
         return redirect(url_for('add_dependent'))
         #return redirect(url_for('edit_dependent_profile'))
     return render_template('add_dependent.html', title='Add Dependent', form=form)
@@ -248,6 +249,9 @@ def file_claim(patient_name):
                 middle_name=patient_name_middle, \
                 last_name=patient_name_last).first()
         claim = Claim(insured_id=current_user.id)
+
+    
+
     """
     try:
         patient = Insured.query. \
@@ -283,6 +287,11 @@ def file_claim(patient_name):
         claim.service_amount = form.service_amount.data
         #claim.service_receipt = form.service_receipt.data
         db.session.commit()
+
+        """
+        f = request.files['receipt']
+        f.save(secure_filename(f.filename))
+        """
         flash('Your claim has been submitted.')
         return redirect(url_for('file_claim',  patient_name=patient_name))
     elif request.method == 'GET':
@@ -302,4 +311,26 @@ def file_claim(patient_name):
     
     return render_template('file_claim.html', title='File Claim', \
         form=form, patient=patient, patient_name=patient_name)
-  
+
+"""
+#original "worked" per the front end only but didn't use /upload page
+# actually, could have only added the receipt-related buttons to html as this wasn't doing anything
+# never even tried going to /upload page
+@app.route('/upload', methods=['POST'])
+def upload_receipt():
+    if request.method == 'POST':
+        file = request.files['image']
+        f = os.path.join('/home/nlibassi/claims-demo-uploads', file.filename)
+        # add code to check that the uploaded file is not malicious
+        file.save(f)
+
+    return render_template('file_claim.html')    
+"""
+
+@app.route('/file_claim/<patient_name>', methods=['POST'])
+def upload_receipt():
+    if request.method == 'POST':
+        f = request.files['receipt']
+        f.save(secure_filename(f.filename))
+
+    return render_template('file_claim.html')   

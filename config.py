@@ -20,6 +20,8 @@ class Config(object):
     #is app.db created in the background when the Flask app object is created? don't think so
     SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URL'] or 'postgresql:///' + os.path.join(basedir, 'app.db')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    #upload folder hardcoded for now in routes, change later
+    #UPLOAD_FOLDER = os.path.basename('/home/nlibassi/claims-demo-uploads')
     #add security salt later
     #SECURITY_PASSWORD_HASH = 'pbkdf2_sha512'
     #SECURITY_PASSWORD_SALT = 

@@ -1,94 +1,16 @@
 {% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
 
-{% block content %}
+{% block app_content %}
     <h1>File Claim</h1>
-    <form action="" method="post">
-        {{ form.hidden_tag() }}
-        <p>
-            {{ form.diagnosis.label }}<br>
-            {{ form.diagnosis(size=64) }}<br>
-            {% for error in form.diagnosis.errors %}
-            <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-        </p>
-        <p>
-            {{ form.service_type.label }}<br>
-            {{ form.service_type }}<br>
-            {% for error in form.service_type.errors %}
-            <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-        </p>
-        <p>
-            {{ form.service_details.label }}<br>
-            {{ form.service_details(size=140) }}<br>
-            {% for error in form.service_details.errors %}
-            <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-        </p>
-        <p>
-            {{ form.service_date.label }}<br>
-            {{ form.service_date(size=10) }}<br>
-            {% for error in form.service_date.errors %}
-            <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-        </p>
-        <p>
-            {{ form.service_provider.label }}<br>
-            {{ form.service_provider(size=30) }}<br>
-            {% for error in form.service_provider.errors %}
-            <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-        </p>
-        <p>
-            {{ form.service_currency.label }}<br>
-            {{ form.service_currency }}<br>
-            {% for error in form.service_currency.errors %}
-            <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-        </p>
-        <p>
-            {{ form.service_amount.label }}<br>
-            {{ form.service_amount(size=10) }}<br>
-            {% for error in form.service_amount.errors %}
-            <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-        </p>
-        <h3>If applicable:</h3>
-        <p>
-            {{ form.accident_employment.label }}<br>
-            {{ form.accident_employment }}<br>
-            {% for error in form.accident_employment.errors %}
-            <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-        </p>
-        <p>
-            {{ form.accident_auto.label }}<br>
-            {{ form.accident_auto }}<br>
-            {% for error in form.accident_auto.errors %}
-            <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-        </p>
-        <p>
-            {{ form.accident_other.label }}<br>
-            {{ form.accident_other }}<br>
-            {% for error in form.accident_other.errors %}
-            <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-        </p>
-        <p>
-            {{ form.accident_date.label }}<br>
-            {{ form.accident_date(size=10) }}<br>
-            {% for error in form.accident_date.errors %}
-            <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-        </p>
-        <p>
-            {{ form.accident_details.label }}<br>
-            {{ form.accident_details(size=140) }}<br>
-            {% for error in form.accident_details.errors %}
-            <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-        </p>
-        <p>{{ form.submit() }}</p>
+        <div class="row">
+        <div class="col-md-4">
+            {{ wtf.quick_form(form) }}
+        </div>
+    </div>
+    <form action = "" method = "POST" enctype="multipart/form-data">
+        <input type = "file" name = "receipt" />
+        <input type = "submit"/>
     </form>
+    
 {% endblock %}

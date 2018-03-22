@@ -1,0 +1,18 @@
+        <form action="/upload" method="post" enctype="multipart/form-data" >
+            <span class="btn btn-default btn-file">
+                Browse <input type="file" name="image">
+            </span>
+
+        <input type="submit" value="Upload your image" class="btn btn-primary">
+        </form>
+
+
+f = os.path.join('/home/nlibassi/claims-demo-uploads', file.filename)
+
+<form action="" method="post" enctype="multipart/form-data" >
+            <span class="btn btn-default btn-file">
+                Browse <input type="file" onchange="this.form.submit()" name="receipt">
+            </span>
+
+        <input type="submit" value="Upload your image" class="btn btn-primary">
+    </form>
