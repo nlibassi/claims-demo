@@ -1,8 +1,10 @@
 {% extends "base.html" %}
 
 {% block app_content %}
-        <h1>Hello, {{ current_user.username }}!</h1>
-        {% for post in posts %}
-        <div><p>{{ post.author.username }} says: <b>{{ post.body }}</b></p></div>
+        <h1>Hello, {{ current_user.first_name }} {{ current_user.last_name }}!</h1>
+        <hr>
+        <h3>File claim for: </h3>
+        {% for patient in patients %}
+        <p><a href="{{ url_for('file_claim', patient_name = patient.full_name)}}">{{patient.full_name}}</a></p>
         {% endfor %}
 {% endblock %}

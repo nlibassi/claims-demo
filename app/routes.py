@@ -13,6 +13,7 @@ from werkzeug import secure_filename
 @app.route('/index')
 @login_required
 def index():
+    insured = Insured.query.filter_by(username=current_user.username).first_or_404()
     # below used as test before having traditional users and posts
     #user = {'username': 'Nick'}
     posts = [
@@ -25,8 +26,17 @@ def index():
             'body' : 'Testing another body'
         }
     ]
+
+    dependents_list = list(Dependent.query.filter_by(insured_id=current_user.id))
+    dependents  = []
+    for d in dependents_list:
+        dependents.append({'full_name': d})
+
+    patients = [d for d in dependents]
+    patients.append({'full_name': '{} {} {}'.format(insured.first_name, insured.middle_name, \
+     insured.last_name)})
    
-    return render_template('index.html', title='Home', posts=posts)
+    return render_template('index.html', title='Home', posts=posts, patients=patients)
      
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -90,13 +100,13 @@ def insured(username):
     dependents  = []
     for d in dependents_list:
         dependents.append({'full_name': d})
-    print('Dependents: {}'.format(dependents_list))
+    #print('Dependents: {}'.format(dependents_list))
 
     #patients = dependents
     patients = [d for d in dependents]
     patients.append({'full_name': '{} {} {}'.format(insured.first_name, insured.middle_name, \
      insured.last_name)})
-    print('Patients: {}'.format(patients))
+    #print('Patients: {}'.format(patients))
 
     return render_template('insured.html', insured=insured, posts=posts, \
         dependents=dependents, patients=patients)
