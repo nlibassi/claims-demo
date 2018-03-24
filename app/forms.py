@@ -59,8 +59,8 @@ class EditProfileForm(FlaskForm):
     first_name = StringField('First Name')
     middle_name = StringField('Middle Name')
     last_name = StringField('Last Name')
-    test = StringField('Test')
-    gender = SelectField(label='Gender', choices=[('f', 'Female'), ('m', 'Male'), ('o', 'Other')])
+    #test = StringField('Test')
+    gender = SelectField(label='Gender', choices=[(None, ''), ('f', 'Female'), ('m', 'Male')])
     date_of_birth = DateField('Date of Birth', format='%m/%d/%Y')
     air_id = StringField('AIR ID')
     #############
@@ -90,8 +90,8 @@ class EditProfileForm(FlaskForm):
     #else:
     medicare_id = StringField('Medicare ID')
     #medicare_id = StringField('Medicare ID', validators=[RequiredIf('medicare_part_a')])
-    full_time_student = SelectField(label='Full-time Student?', choices=[('n', 'No'), ('y', 'Yes')])
-    string_test = SelectField(label='String Test', choices=[('n', 'No'), ('y', 'Yes')])
+    full_time_student = SelectField(label='Full-time Student?', choices=[(None, ''), ('n', 'No'), ('y', 'Yes')])
+    #string_test = SelectField(label='String Test', choices=[('n', 'No'), ('y', 'Yes')])
     # function below not working at all right now
     def validate(self):
         valid = True
@@ -117,9 +117,11 @@ class EditDependentProfileForm(FlaskForm):
     first_name = StringField('First Name')
     middle_name = StringField('Middle Name')
     last_name = StringField('Last Name')
-    test = StringField('Test')
-    gender = StringField('Gender')
-    #relationship_to_insured = StringField('Relationship to Employee')
+    #test = StringField('Test')
+    gender = SelectField(label='Gender', choices=[(None, ''), ('f', 'Female'), ('m', 'Male')])
+    date_of_birth = DateField('Date of Birth', format='%m/%d/%Y')
+    relationship_to_insured = SelectField(label='Relationship to Employee', choices=[(None, ''), ('s', 'Spouse'), ('c', 'Child')])
+    full_time_student = SelectField(label='Full-time Student?', choices=[(None, ''), ('n', 'No'), ('y', 'Yes')])
     #date_of_birth = DateField('Date of Birth')
     submit = SubmitField('Submit')         
 

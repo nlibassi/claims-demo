@@ -128,7 +128,7 @@ def edit_profile():
         current_user.first_name = form.first_name.data
         current_user.middle_name = form.middle_name.data
         current_user.last_name = form.last_name.data
-        current_user.test = form.test.data
+        #current_user.test = form.test.data
         current_user.gender = form.gender.data
         current_user.date_of_birth = form.date_of_birth.data
         current_user.air_id = form.air_id.data
@@ -148,7 +148,7 @@ def edit_profile():
         current_user.medicare_part_b = form.medicare_part_b.data
         current_user.medicare_id = form.medicare_id.data
         current_user.full_time_student = form.full_time_student.data
-        current_user.string_test = form.string_test.data
+        #current_user.string_test = form.string_test.data
         db.session.commit()
         flash('Your changes have been saved.')
         return redirect(url_for('edit_profile'))
@@ -157,7 +157,7 @@ def edit_profile():
         form.first_name.data = current_user.first_name
         form.middle_name.data = current_user.middle_name
         form.last_name.data = current_user.last_name
-        form.test.data = current_user.test
+        #form.test.data = current_user.test
         form.gender.data = current_user.gender
         form.date_of_birth.data = current_user.date_of_birth
         form.air_id.data = current_user.air_id
@@ -177,7 +177,7 @@ def edit_profile():
         form.medicare_part_b.data = current_user.medicare_part_b
         form.medicare_id.data = current_user.medicare_id
         form.full_time_student.data = current_user.full_time_student
-        form.string_test.data = current_user.string_test
+        #form.string_test.data = current_user.string_test
     return render_template('edit_profile.html', title='Edit Profile', form=form)
 
 #@login_required
@@ -189,11 +189,12 @@ def add_dependent():
         dependent = Dependent(first_name=form.first_name.data, 
             middle_name=form.middle_name.data, last_name=form.last_name.data,
             insured_id=current_user.id)
+        insured = Insured.query.filter_by(id=current_user.id).first_or_404()
+        insured.has_dependent = 'y'
         db.session.add(dependent)
         db.session.commit()
         #current_user.has_dependent = True
-        insured = Insured.query.filter_by(id=current_user.id).first_or_404()
-        insured.has_dependent = True
+
         #flash('{} {}'.format(insured.has_dependent, insured.first_name))
         #flash('{} {} {}'.format(insured.has_dependent, insured.first_name, insured.last_name))
         flash('{} {} {} has been added as a dependent'.format(dependent.first_name, 
@@ -224,8 +225,11 @@ def edit_dependent_profile(dependent_name):
         dependent.first_name = form.first_name.data
         dependent.middle_name = form.middle_name.data
         dependent.last_name = form.last_name.data
-        dependent.test = form.test.data
+        #dependent.test = form.test.data
         dependent.gender = form.gender.data
+        dependent.date_of_birth = form.date_of_birth.data
+        dependent.relationship_to_insured = form.relationship_to_insured.data
+        dependent.full_time_student = form.full_time_student.data
         db.session.commit()
         flash('Your changes have been saved.')
         return redirect(url_for('edit_dependent_profile', dependent_name=dependent_name))
@@ -233,8 +237,11 @@ def edit_dependent_profile(dependent_name):
         form.first_name.data = dependent_name_first
         form.middle_name.data = dependent_name_middle
         form.last_name.data = dependent_name_last
-        form.test.data = dependent.test
+        #form.test.data = dependent.test
         form.gender.data = dependent.gender
+        form.date_of_birth.data = dependent.date_of_birth
+        form.relationship_to_insured.data = dependent.relationship_to_insured
+        form.full_time_student.data = dependent.full_time_student
     
     return render_template('edit_dependent_profile.html', title='Edit Dependent Profile', \
         form=form, dependent=dependent, dependent_name=dependent_name)

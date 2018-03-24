@@ -17,7 +17,7 @@ class Insured(UserMixin, db.Model):
     first_name = db.Column(db.String(64))
     middle_name = db.Column(db.String(64))
     last_name = db.Column(db.String(64))
-    test = db.Column(db.String(15))
+    #test = db.Column(db.String(15))
     #tried to change gender to integer but it didn't change upon migration? try again later
     gender = db.Column(db.String(1))
     date_of_birth = db.Column(db.Date)
@@ -38,8 +38,8 @@ class Insured(UserMixin, db.Model):
     medicare_part_b = db.Column(db.String(1))
     medicare_id = db.Column(db.String(64))
     full_time_student = db.Column(db.String(1))
-    has_dependent = db.Column(db.Boolean())
-    string_test = db.Column(db.String(1))
+    has_dependent = db.Column(db.String(1))
+    #string_test = db.Column(db.String(1))
     #gender should be integer with lookup later, had issue with Integer
     #not a db field but high-level view of relationship 
     #between insureds and claims - a 'virtual field'
@@ -65,9 +65,11 @@ class Dependent(db.Model):
     last_name = db.Column(db.String(64))
     UniqueConstraint('insured_id', 'first_name', 'middle_name', 
         'last_name', name='unique_dependent_name_constraint')
-    test = db.Column(db.String(15))
-    gender = db.Column(db.String(15))
-    #date_of_birth = db.Column(db.Date)
+    #test = db.Column(db.String(15))
+    gender = db.Column(db.String(1))
+    date_of_birth = db.Column(db.Date)
+    relationship_to_insured = db.Column(db.String(1))
+    full_time_student = db.Column(db.String(1))
     #gender should be integer with lookup later, had issue with Integer
     #not a db field but high-level view of relationship 
     #between insureds and claims - a 'virtual field'
