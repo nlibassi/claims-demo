@@ -18,7 +18,7 @@ class Config(object):
     SECRET_KEY = os.environ.get('SECRET_KEY') or b'\x95\x87\x1c\xb7F\xeb\x03\xdd\xb5\xfa+\xb8:5\xcci\xff\xc9\tg>\xb5%\xaf'
     # db url is also env-based
     #is app.db created in the background when the Flask app object is created? don't think so
-    SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URL'] or 'postgresql:///' + os.path.join(basedir, 'app.db')
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL' or 'postgresql:///' + os.path.join(basedir, 'app.db'))
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     #upload folder hardcoded for now in routes, change later
     #UPLOAD_FOLDER = os.path.basename('/home/nlibassi/claims-demo-uploads')
