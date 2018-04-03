@@ -309,8 +309,9 @@ def file_claim(patient_name):
         f = request.files['receipt']
         f.save(secure_filename(f.filename))
         """
-        flash('Your claim has been submitted.')
-        return redirect(url_for('file_claim',  patient_name=patient_name))
+        flash('Your claim information has been submitted. Please submit associated receipt.')
+        #return redirect(url_for('file_claim',  patient_name=patient_name))
+        return redirect(url_for('upload_receipt'))
     elif request.method == 'GET':
         form.diagnosis.data = claim.diagnosis
         form.accident_employment.data = claim.accident_employment
@@ -344,10 +345,12 @@ def upload_receipt():
     return render_template('file_claim.html')    
 """
 
-@app.route('/file_claim/<patient_name>', methods=['POST'])
+@app.route('/upload_receipt', methods=['GET', 'POST'])
 def upload_receipt():
     if request.method == 'POST':
         f = request.files['receipt']
         f.save(secure_filename(f.filename))
+        flash('Your claim has been submitted.')
+        return redirect(url_for('index'))
 
-    return render_template('file_claim.html')   
+    return render_template('upload_receipt.html')   
