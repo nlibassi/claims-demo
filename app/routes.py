@@ -9,6 +9,7 @@ from werkzeug.urls import url_parse
 from datetime import datetime
 from werkzeug import secure_filename
 
+
 @app.route('/')
 @app.route('/index')
 @login_required
@@ -137,7 +138,7 @@ def edit_profile():
         current_user.mailing_city = form.mailing_city.data
         current_user.mailing_state = form.mailing_state.data
         current_user.mailing_zip = form.mailing_zip.data
-        current_user.mailing_country = form.mailing_country.data
+        #current_user.mailing_country = form.mailing_country.data
         current_user.residence_country = form.residence_country.data
         current_user.foreign_currency_default = form.foreign_currency_default.data
         current_user.other_coverage = form.other_coverage.data
@@ -166,7 +167,7 @@ def edit_profile():
         form.mailing_city.data = current_user.mailing_city
         form.mailing_state.data = current_user.mailing_state
         form.mailing_zip.data = current_user.mailing_zip
-        form.mailing_country.data = current_user.mailing_country
+        #form.mailing_country.data = current_user.mailing_country
         form.residence_country.data = current_user.residence_country
         form.foreign_currency_default.data = current_user.foreign_currency_default
         form.other_coverage.data = current_user.other_coverage
@@ -246,6 +247,7 @@ def edit_dependent_profile(dependent_name):
     return render_template('edit_dependent_profile.html', title='Edit Dependent Profile', \
         form=form, dependent=dependent, dependent_name=dependent_name)
 
+
 @app.route('/file_claim/<patient_name>', methods=['GET', 'POST']) 
 def file_claim(patient_name):
     form = FileClaimForm()
@@ -260,32 +262,22 @@ def file_claim(patient_name):
         print('Patient id is {}'.format(patient.id))
         print(patient.insured_id)
         claim = Claim(insured_id=current_user.id, dependent_id=patient.id)
+        claim_pre_reqs = [patient.gender, patient.date_of_birth, patient.relationship_to_insured, patient.full_time_student]
+        #patient_type = 'dependent'
+        #incomplete_profile_redirect = 'edit_dependent_profile' #finish
+        if all(p is not None for p in claim_pre_reqs):
+            db.session.add(claim)
+        else:
+            flash('Please complete profile for dependent before filing claim.')
+            return redirect(url_for('edit_dependent_profile', dependent_name=patient_name))
     except:
         patient = Insured.query. \
             filter_by(first_name=patient_name_first, \
                 middle_name=patient_name_middle, \
                 last_name=patient_name_last).first()
         claim = Claim(insured_id=current_user.id)
-
+        db.session.add(claim)
     
-
-    """
-    try:
-        patient = Insured.query. \
-            filter_by(first_name=patient_name_first, \
-                middle_name=patient_name_middle, \
-                last_name=patient_name_last).first()
-        claim = Claim(insured_id=current_user.id)
-    except:
-        patient = Dependent.query. \
-            filter_by(first_name=patient_name_first, \
-                middle_name=patient_name_middle, \
-                last_name=patient_name_last).first()
-        print('Patient id is {}'.format(patient.id))
-        print(patient.insured_id)
-        claim = Claim(insured_id=current_user.id, dependent_id=16)
-    """
-    db.session.add(claim)
     #dependents_list = list(Dependent.query.filter(Dependent.insured_id==current_user.id))
 
     #query db using dependent argument and update db that way

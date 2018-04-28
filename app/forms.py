@@ -62,35 +62,35 @@ class EditProfileForm(FlaskForm):
     #test = StringField('Test')
     gender = SelectField(label='Gender', choices=[(None, ''), ('f', 'Female'), ('m', 'Male')])
     date_of_birth = DateField('Date of Birth', format='%m/%d/%Y')
-    air_id = StringField('AIR ID')
+    air_id = StringField('AIR ID', validators=[DataRequired()])
     #############
-    mailing_street = StringField('Street Address')
-    mailing_optional = StringField('Building (optional)')
-    mailing_city = StringField('City')
-    mailing_state = SelectField(label='State', choices=us_states)
-    mailing_zip = StringField('Zip Code')
+    mailing_street = StringField('U.S. Mailing Street Address', validators=[DataRequired()])
+    mailing_optional = StringField('Address 2 (Optional)')
+    mailing_city = StringField('City', validators=[DataRequired()])
+    mailing_state = SelectField(label='State', choices=us_states, validators=[DataRequired()])
+    mailing_zip = StringField('Zip Code', validators=[DataRequired()])
     #the following three will be replaced
-    mailing_country = SelectField(label='Country (Mailing)', choices=countries)
-    residence_country = SelectField(label='Country (Residence)', choices=countries)
-    foreign_currency_default = SelectField(label='Default Currency', choices=currencies)
+    #mailing_country = SelectField(label='Country (Mailing)', choices=countries)
+    residence_country = SelectField(label='Country (Residence)', choices=countries, validators=[DataRequired()])
+    foreign_currency_default = SelectField(label='Default Currency', choices=currencies, validators=[DataRequired()])
     """
     mailing_country = SelectField(label='Country (Mailing)', choices=countries)
     residence_country = SelectField(label='Country (Residence)', choices=countries)
     foreign_currency_default = SelectField(label='Default Currency', choices=currencies)
     """
-    other_coverage = SelectField(label='Other Coverage?', choices=[('n', 'No'), ('y', 'Yes')])
+    other_coverage = SelectField(label='Other Coverage?', choices=[(None, ''), ('n', 'No'), ('y', 'Yes')], validators=[DataRequired()])
     other_insurance_co = StringField('Other Insurance Company Name')
     other_plan_name = StringField('Other Insurance Plan Name')
     other_plan_id = StringField('Other Plan ID')
-    medicare_part_a = SelectField(label='Coverage with Medicare Part A?', choices=[('n', 'No'), ('y', 'Yes')])
-    medicare_part_b = SelectField(label='Coverage with Medicare Part B?', choices=[('n', 'No'), ('y', 'Yes')])
+    medicare_part_a = SelectField(label='Coverage with Medicare Part A?', choices=[(None, ''), ('n', 'No'), ('y', 'Yes')], validators=[DataRequired()])
+    medicare_part_b = SelectField(label='Coverage with Medicare Part B?', choices=[(None, ''), ('n', 'No'), ('y', 'Yes')], validators=[DataRequired()])
     #something like this could be done in routes (maybe) but not here
     #if medicare_part_a == 'Yes' or medicare_part_b == 'Yes':
         #medicare_id = StringField('Medicare ID', validators=[InputRequired()])
     #else:
     medicare_id = StringField('Medicare ID')
     #medicare_id = StringField('Medicare ID', validators=[RequiredIf('medicare_part_a')])
-    full_time_student = SelectField(label='Full-time Student?', choices=[(None, ''), ('n', 'No'), ('y', 'Yes')])
+    full_time_student = SelectField(label='Full-time Student?', choices=[(None, ''), ('n', 'No'), ('y', 'Yes')], validators=[DataRequired()])
     #string_test = SelectField(label='String Test', choices=[('n', 'No'), ('y', 'Yes')])
     # function below not working at all right now
     def validate(self):
