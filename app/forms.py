@@ -43,17 +43,19 @@ class RegistrationForm(FlaskForm):
         EqualTo('password')])
     submit = SubmitField('Register')
 
+    #comment out validate_username() and/or validate_email() functions to test error handling (or lack thereof)
     #changed 'user' to 'insured' here for consistency with routes.py
     def validate_username(self, username):
         insured = Insured.query.filter_by(username=username.data).first()
         if insured is not None:
             raise ValidationError('Please use a different username')
+    
 
     def validate_email(self, email):
         insured =  Insured.query.filter_by(email=email.data).first()
         if insured is not None:
             raise ValidationError('Please use a different email address')
-
+    
 class EditProfileForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
     first_name = StringField('First Name')
@@ -92,6 +94,18 @@ class EditProfileForm(FlaskForm):
     #medicare_id = StringField('Medicare ID', validators=[RequiredIf('medicare_part_a')])
     full_time_student = SelectField(label='Full-time Student?', choices=[(None, ''), ('n', 'No'), ('y', 'Yes')], validators=[DataRequired()])
     #string_test = SelectField(label='String Test', choices=[('n', 'No'), ('y', 'Yes')])
+    
+
+    def __init__(self, original_username, *args, **kwargs):
+        super(EditProfileForm, self).__init__(*args, **kwargs)
+        self.original_username = original_username
+
+    def validate_username(self, username):
+        if username.data != self.original_username:
+            insured = Insured.query.filter_by(username=self.username.data).first()
+            if insured is not None:
+                raise ValidationError('Please use a different username.')
+    """
     # function below not working at all right now
     def validate(self):
         valid = True
@@ -103,6 +117,7 @@ class EditProfileForm(FlaskForm):
             valid = False
         else:
             return valid
+    """
     submit = SubmitField('Submit')   
 
 class AddDependentForm(FlaskForm):
@@ -145,3 +160,9 @@ class FileClaimForm(FlaskForm):
     service_amount = StringField('Service Amount (local currency)')
     #service_receipt = FileField('Service Receipt')
     submit = SubmitField('Submit') 
+
+
+class ResetPasswordRequestForm(FlaskForm):
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    submit = SubmitField('Request Password Reset')
+    

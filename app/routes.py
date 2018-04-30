@@ -8,6 +8,8 @@ from app.models import Insured, Dependent, Claim
 from werkzeug.urls import url_parse
 from datetime import datetime
 from werkzeug import secure_filename
+from app.forms import ResetPasswordRequestForm
+from app.email import send_password_reset_email
 
 
 @app.route('/')
@@ -123,7 +125,7 @@ def before_request():
 #why not /user/edit_profile?
 @app.route('/edit_profile', methods=['GET', 'POST']) 
 def edit_profile():
-    form = EditProfileForm()
+    form = EditProfileForm(current_user.username)
     if form.validate_on_submit():
         current_user.username = form.username.data
         current_user.first_name = form.first_name.data
@@ -346,3 +348,17 @@ def upload_receipt():
         return redirect(url_for('index'))
 
     return render_template('upload_receipt.html')   
+
+
+@app.route('/reset_password_request', methods=['GET', 'POST'])
+def reset_password_request():
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+    form = ResetPasswordRequestForm()
+    if form.validate_on_submit():
+        insured = Insured.query.filter_by(email=form.email.data).first()
+        if insured:
+            send_password_reset_email(insured)
+        flash('Check your email for the instructions to reset your password')
+        return redirect(url_for('login'))
+    return render_template('reset_password_request.html', title='Reset Password', form=form)    

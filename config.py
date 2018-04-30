@@ -26,16 +26,18 @@ class Config(object):
     #SECURITY_PASSWORD_HASH = 'pbkdf2_sha512'
     #SECURITY_PASSWORD_SALT = 
 
-    """
-    finish later
-    SECURITY_EMAIL_SENDER = 'no-reply@example.com'
+    #SECURITY_EMAIL_SENDER = 'no-reply@example.com'
     MAIL_SERVER = 'email-smtp.us-west-2.amazonaws.com'
-    MAIL_PORT = 465
-    MAIL_USE_SSL = True
-    MAIL_USERNAME = ''
-    MAIL_PASSWORD = ''
+    MAIL_SERVER = os.environ.get('MAIL_SERVER')
+    #MAIL_PORT = 465
+    MAIL_PORT = int(os.environ.get('MAIL_PORT') or 25)
+    #MAIL_USE_SSL = True
+    MAIL_USE_TLS = os.environ.get('MAIL_USE_TLS') is not None
+    MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
+    MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
+    ADMINS = ['nlibassi@gmail.com']
 
-    """
+    
 
 class ProductionConfig(Config):
     DEBUG = False
