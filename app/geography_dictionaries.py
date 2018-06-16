@@ -67,6 +67,7 @@ countries = {}
 for c in country_list:
         countries[c.alpha_3] = c.name
 
+# next time key and value (for sake of exch rate function) should be switched here but leave for now
 currency_list = list(pycountry.currencies)
 currencies = {}
 for c in currency_list:

@@ -8,8 +8,38 @@ from app.models import Insured, Dependent, Claim
 from werkzeug.urls import url_parse
 from datetime import datetime
 from werkzeug import secure_filename
-from app.forms import ResetPasswordRequestForm
+from app.forms import ResetPasswordRequestForm, ResetPasswordForm
 from app.email import send_password_reset_email
+import requests
+from app.geography_dictionaries import currencies
+
+
+def get_exchange_rate(date, foreign_currency):
+
+    """
+    INPUT:
+        date: string in format '2008-11-04'
+        currency: string in format 'TRY'
+    OUTPUT:
+        returns appropriate historical exchange rate as json (?)
+    """
+
+    api_key = 'f3c2a32e73c4784284b8ca33a4f30f95'
+    print(foreign_currency)
+    #returns 'TRY' from 'Turkish Lira' given as foreign_currency
+    #foreign_currency_code = list(currencies.keys())[list(currencies.values()).index(foreign_currency)]
+
+    params = {'access_key': api_key, 'date': date, 'currencies': foreign_currency, 'format': 1}
+
+    # use 'live' in place of historical if desired
+    r = requests.get('http://apilayer.net/api/historical', params = params)
+
+    usd_to_foreign_currency = 'USD' + foreign_currency
+
+    # is returned as float by default
+    historical_quote = r.json()['quotes'][usd_to_foreign_currency]
+
+    return historical_quote                                              
 
 
 @app.route('/')
@@ -128,6 +158,7 @@ def edit_profile():
     form = EditProfileForm(current_user.username)
     if form.validate_on_submit():
         current_user.username = form.username.data
+        current_user.email = form.email.data
         current_user.first_name = form.first_name.data
         current_user.middle_name = form.middle_name.data
         current_user.last_name = form.last_name.data
@@ -157,6 +188,7 @@ def edit_profile():
         return redirect(url_for('edit_profile'))
     elif request.method == 'GET':
         form.username.data = current_user.username
+        form.email.data = current_user.email
         form.first_name.data = current_user.first_name
         form.middle_name.data = current_user.middle_name
         form.last_name.data = current_user.last_name
@@ -294,6 +326,7 @@ def file_claim(patient_name):
         claim.service_details = form.service_details.data
         claim.service_date = form.service_date.data
         claim.service_currency = form.service_currency.data
+        claim.service_exchange_rate = get_exchange_rate(claim.service_date, claim.service_currency)
         claim.service_provider = form.service_provider.data
         claim.service_amount = form.service_amount.data
         #claim.service_receipt = form.service_receipt.data
@@ -317,6 +350,8 @@ def file_claim(patient_name):
         form.service_details.data = claim.service_details
         form.service_date.data = claim.service_date
         form.service_currency.data = current_user.foreign_currency_default
+        #if claim.service_exchange_rate: 
+            #form.service_exchange_rate = claim.service_exchange_rate
         form.service_provider.data = claim.service_provider
         form.service_amount.data = claim.service_amount
         #form.service_receipt.data = claim.service_receipt
@@ -362,3 +397,18 @@ def reset_password_request():
         flash('Check your email for the instructions to reset your password')
         return redirect(url_for('login'))
     return render_template('reset_password_request.html', title='Reset Password', form=form)    
+
+@app.route('/reset_password/<token>', methods=['GET', 'POST'])
+def reset_password(token):
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+    insured = Insured.verify_reset_password_token(token)
+    if not insured:
+        return redirect(url_for('index'))
+    form = ResetPasswordForm
+    if form.validate_on_submit():
+        insured.set_password(form.password.data)
+        db.session.commit()
+        flash('Your password has been reset.')
+        return redirect(url_for('login'))
+    return render_template('reset_password.html', form=form)   

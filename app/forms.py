@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, \
-SubmitField, DateField, SelectField, FileField
+SubmitField, DateField, SelectField, FileField, DecimalField
 #not using Required right now, look into it
 from wtforms.validators import ValidationError, DataRequired, Email, \
 EqualTo, InputRequired, Required, Optional
@@ -58,6 +58,7 @@ class RegistrationForm(FlaskForm):
     
 class EditProfileForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
+    email = StringField('Email', validators=[DataRequired(), Email()])
     first_name = StringField('First Name')
     middle_name = StringField('Middle Name')
     last_name = StringField('Last Name')
@@ -156,8 +157,9 @@ class FileClaimForm(FlaskForm):
     service_date = DateField('Date of Service', format='%m/%d/%Y')
     #pre-populate
     service_currency = SelectField(label='Currency of Service', choices=currencies)
+    #service_exchange_rate = DecimalField('Exchange Rate')
     service_provider = StringField('Service Provider')
-    service_amount = StringField('Service Amount (local currency)')
+    service_amount = StringField('Service Amount (local currency, exchange rate calculated automatically)')
     #service_receipt = FileField('Service Receipt')
     submit = SubmitField('Submit') 
 
@@ -165,4 +167,11 @@ class FileClaimForm(FlaskForm):
 class ResetPasswordRequestForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
     submit = SubmitField('Request Password Reset')
-    
+
+
+class ResetPasswordForm(FlaskForm):
+    password = PasswordField('Password', validators=[DataRequired()])
+    password2 = PasswordField('Repeat Password',
+     validators=[DataRequired(), EqualTo('password')])
+    submit = SubmitField('Request Password Reset')
+

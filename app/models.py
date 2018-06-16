@@ -5,6 +5,9 @@ from app import login
 from sqlalchemy import UniqueConstraint
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
+from time import time
+import jwt
+from app import app
 
 #add UserMixin back after BaseModel
 class Insured(UserMixin, db.Model):
@@ -46,15 +49,35 @@ class Insured(UserMixin, db.Model):
     claims = db.relationship('Claim', backref='author', lazy='dynamic')
     dependents = db.relationship('Dependent', backref='employee', lazy='dynamic')
 
+
     def __repr__(self):
         return '<Username {}>'.format(self.username)
+
     
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
 
+
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
 
+
+    def get_reset_password_token(self, expires_in=600):
+        return jwt.encode(
+            {'reset_password': self.id, 'exp': time() + expires_in},
+            app.config['SECRET_KEY'], algorithm='HS256').decode('utf-8')
+
+
+    @staticmethod
+    def verify_reset_password_token(token):
+        try:
+            id = jwt.decode(token, app.config['SECRET_KEY'], 
+                algorithms=['HS256'])['reset_password']
+        except:
+            return
+        return Insured.query.get(id)
+
+        
 class Dependent(db.Model):
     #make id serial next time? but still populates itself this way
     id = db.Column(db.Integer, primary_key=True)
@@ -93,6 +116,8 @@ class Claim(db.Model):
     service_details = db.Column(db.String(64))
     service_date = db.Column(db.Date)
     service_currency = db.Column(db.String(30))
+    # exch rate will be automatically populated based on selected date and currency
+    service_exchange_rate = db.Column(db.Float())
     service_provider = db.Column(db.String(30))
     service_amount = db.Column(db.Float())
     # the image may need to be uploaded to the server rather than stored in the db
