@@ -1,6 +1,7 @@
 import pycountry
 
-out_file = '/home/nlibassi/claims-demo/app/geography_lists.txt'
+#should probably do this differently but leaving as is for now
+#out_file = 
 
 us_states = {
         'AK': 'Alaska',
@@ -73,7 +74,7 @@ currencies = {}
 for c in currency_list:
         currencies[c.alpha_3] = c.name
 
-
+"""
 dict_list = [us_states, countries, currencies]
 
 with open(out_file, 'a') as out:
@@ -82,3 +83,4 @@ with open(out_file, 'a') as out:
                 for k in d:
                         content_list.append((k, d[k]))
         out.write(str(content_list) + '\n')
+"""
