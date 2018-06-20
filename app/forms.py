@@ -65,7 +65,7 @@ class EditProfileForm(FlaskForm):
     #test = StringField('Test')
     gender = SelectField(label='Gender', choices=[(None, ''), ('f', 'Female'), ('m', 'Male')])
     date_of_birth = DateField('Date of Birth', format='%m/%d/%Y')
-    air_id = StringField('AIR ID', validators=[DataRequired()])
+    air_id = StringField('Insured ID', validators=[DataRequired()])
     #############
     mailing_street = StringField('U.S. Mailing Street Address', validators=[DataRequired()])
     mailing_optional = StringField('Address 2 (Optional)')
@@ -159,7 +159,7 @@ class FileClaimForm(FlaskForm):
     service_currency = SelectField(label='Currency of Service', choices=currencies)
     #service_exchange_rate = DecimalField('Exchange Rate')
     service_provider = StringField('Service Provider')
-    service_amount = StringField('Service Amount (local currency, exchange rate calculated automatically)')
+    service_amount = StringField('Service Amount (in local currency - converted to USD automatically)')
     #service_receipt = FileField('Service Receipt')
     submit = SubmitField('Submit') 
 

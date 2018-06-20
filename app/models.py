@@ -120,6 +120,7 @@ class Claim(db.Model):
     service_exchange_rate = db.Column(db.Float())
     service_provider = db.Column(db.String(30))
     service_amount = db.Column(db.Float())
+    #service_amount_usd = service_amount / service_exchange_rate
     # the image may need to be uploaded to the server rather than stored in the db
     #service_receipt = ??
 
