@@ -13,5 +13,17 @@
         <h3>Please edit your profile before filing a claim.</h3>
         <a href="{{ url_for('edit_profile') }}">Edit Profile</a>
         {% endif %}
-        
+{% endblock %}
+
+
+{% block app_content %}
+       {% from "_formhelpers.html" import render_field %}
+        <form method=post>
+          <dl>
+            {{ render_field(form.select) }}
+            <p>
+            {{ render_field(form.search) }}
+        </dl>
+        <p><input type=submit value=Search>
+        </form>
 {% endblock %}

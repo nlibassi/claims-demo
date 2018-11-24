@@ -1,3 +1,5 @@
+#forms.py
+
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, \
 SubmitField, DateField, SelectField, FileField, DecimalField
@@ -175,3 +177,10 @@ class ResetPasswordForm(FlaskForm):
      validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Request Password Reset')
 
+
+class ClaimSearchForm(FlaskForm):
+    choices = [('First Name', 'First Name'),
+                        ('Last Name', 'Last Name'),
+                        ('Date of Service', 'Date of Service')]
+    select = SelectField('Search for claim:', choices=choices)
+    search = StringField('')

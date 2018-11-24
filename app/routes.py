@@ -1,7 +1,7 @@
 from flask import render_template, flash, redirect, url_for, request
 from app import app, db
 from app.forms import LoginForm, RegistrationForm, EditProfileForm, \
-EditDependentProfileForm, AddDependentForm, FileClaimForm
+EditDependentProfileForm, AddDependentForm, FileClaimForm, ClaimSearchForm
 from flask_login import current_user, login_user, logout_user, login_required
 #add Claim later
 from app.models import Insured, Dependent, Claim
@@ -68,8 +68,12 @@ def index():
     patients = [d for d in dependents]
     patients.append({'full_name': '{} {} {}'.format(insured.first_name, insured.middle_name, \
      insured.last_name)})
+
+    search = ClaimSearchForm(request.form)
+    if request.method == 'POST':
+        return search_results(search)
    
-    return render_template('index.html', title='Home', posts=posts, patients=patients)
+    return render_template('index.html', title='Home', posts=posts, patients=patients, form=search)
      
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -412,3 +416,20 @@ def reset_password(token):
         flash('Your password has been reset.')
         return redirect(url_for('login'))
     return render_template('reset_password.html', form=form)   
+
+
+@app.route('/results')
+def search_results(search):
+    results = []
+    search_string = search.data['search']
+
+    if search.data['search'] == '':
+        query = db_session.query(Claim)
+        results = query.all()
+
+    if not results:
+        flash('No results found!')
+        return redirect('/')
+    else:
+        # display results
+        return render_template('results.html', results=results)
